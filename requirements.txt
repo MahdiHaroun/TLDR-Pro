@@ -1,0 +1,16 @@
+langchain
+python-dotenv
+langchain_community
+pypdf
+bs4
+langchain-text-splitters
+fastapi
+faiss-cpu
+beautifulsoup4
+uvicorn
+yt_dlp
+langchain_groq
+sentence-transformers
+langchain_huggingface
+pymupdf
+unstructured
