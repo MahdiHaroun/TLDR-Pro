@@ -16,4 +16,9 @@ class url_Request(BaseModel):
     
 class url_Response(BaseModel):
     summary: str
-     
+
+class ms_Request(BaseModel):
+    word_count: int
+
+class ms_Response(BaseModel):
+    summary: str

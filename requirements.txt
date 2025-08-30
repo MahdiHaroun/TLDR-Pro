@@ -14,3 +14,7 @@ sentence-transformers
 langchain_huggingface
 pymupdf
 unstructured
+python-multipart
+docx2txt
+python-magic
+python-pptx
