@@ -25,18 +25,44 @@ from langchain.prompts import PromptTemplate
 from langchain_community.document_loaders import Docx2txtLoader
 from langchain_community.document_loaders import UnstructuredExcelLoader
 from langchain_community.document_loaders import UnstructuredPowerPointLoader
+from langchain.chains.summarize import load_summarize_chain
+from langchain.text_splitter import RecursiveCharacterTextSplitter  
 
 prompt_template = """
 Provide a summary of the following content in {word_count} words:
 Content:{text}
 """
 
-prompt = PromptTemplate(
-    input_variables=["word_count" , "text"],
-    template=prompt_template
+chunks_prompts = '''
+please summarize the below speech: 
+speech: {text}
+summary:
+
+'''
+
+map_prompt_template = PromptTemplate(input_variables=["text"], template=chunks_prompts)
+
+
+final_prompt = '''
+provide the final summary of the entire speech with these important points.
+add a Motivation title , start the precise summary with a introduction and provide the summary in number and points for the speech.
+Speech: {text} with a approximatly {word_count} words
+'''
+
+final_prompt_template = PromptTemplate(input_variables=["text", "word_count"], template=final_prompt)
+
+
+
+
+llm_chain = load_summarize_chain(
+    llm = llm, 
+    chain_type="map_reduce",
+    map_prompt=map_prompt_template,
+    combine_prompt=final_prompt_template,
+    verbose=True
 )
 
-llm_chain = LLMChain(llm=llm, prompt=prompt)
+
 
 @router.post("/word", status_code=status.HTTP_200_OK)
 async def summarize_mord(file: UploadFile = File(...), word_count: int = Form(...)):
@@ -48,18 +74,19 @@ async def summarize_mord(file: UploadFile = File(...), word_count: int = Form(..
     
     loader = Docx2txtLoader(tmp_path)
     documents = loader.load()
+    init_docs = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100).split_documents(documents)
 
     
-    combined_text = "\n".join(doc.page_content for doc in documents)
+    
 
     # Summarize using LLMChain
     summary = await llm_chain.ainvoke({
-        "text": combined_text,
+        "input_documents": init_docs,
         "word_count": word_count
     })
 
-    return ms_Response(summary=summary['text'])
-    
+    return ms_Response(summary=summary['output_text'])
+
 
 @router.post("/excel" , status_code=status.HTTP_200_OK)
 async def summarize_excel(file: UploadFile = File(...), word_count: int = Form(...)):
@@ -70,16 +97,18 @@ async def summarize_excel(file: UploadFile = File(...), word_count: int = Form(.
 
         loader = UnstructuredExcelLoader(tmp_path)
         documents = loader.load()
+        init_docs = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100).split_documents(documents)
 
-        combined_text = "\n".join(doc.page_content for doc in documents)
+        
 
         # Summarize using LLMChain
         summary = await llm_chain.ainvoke({
-            "text": combined_text,
+            "input_documents": init_docs,
             "word_count": word_count
         })
 
-        return ms_Response(summary=summary['text'])
+        return ms_Response(summary=summary['output_text'])
+
 
 
 @router.post("/powerp" , status_code=status.HTTP_200_OK)
@@ -92,14 +121,15 @@ async def summarize_powerpoint(file: UploadFile = File(...), word_count: int = F
     loader = UnstructuredPowerPointLoader(tmp_path)
     documents = loader.load()
 
-    combined_text = "\n".join(doc.page_content for doc in documents)
+    init_docs = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100).split_documents(documents)
 
     # Summarize using LLMChain
     summary = await llm_chain.ainvoke({
-        "text": combined_text,
+        "input_documents": init_docs,
         "word_count": word_count
     })
 
-    return ms_Response(summary=summary['text'])
+    return ms_Response(summary=summary['output_text'])
+
 
 
