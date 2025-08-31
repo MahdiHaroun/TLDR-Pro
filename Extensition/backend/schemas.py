@@ -22,3 +22,9 @@ class ms_Request(BaseModel):
 
 class ms_Response(BaseModel):
     summary: str
+
+class pdf_Request(BaseModel):
+    word_count: int
+
+class pdf_Response(BaseModel):
+    summary: str
