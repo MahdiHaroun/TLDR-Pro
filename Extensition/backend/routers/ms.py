@@ -19,8 +19,8 @@ os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
 
 from langchain_groq import ChatGroq
 from langchain_community.llms import Ollama
-#llm = ChatGroq(model="openai/gpt-oss-20b", groq_api_key=os.getenv("GROQ_API"))
-llm = Ollama(model="gemma:2b")
+llm = ChatGroq(model="openai/gpt-oss-20b", groq_api_key=os.getenv("GROQ_API"))
+#llm = Ollama(model="gemma:2b")
 from langchain.chains import LLMChain  
 from langchain.prompts import PromptTemplate
 from langchain_community.document_loaders import Docx2txtLoader
