@@ -104,16 +104,22 @@ function App() {
     formData.append('word_count', wordCount.toString())
     
     try {
-      const response = await sendToBackground(`/${endpoint}`, formData)
+      // Make direct request for file uploads (can't pass FormData through extension messaging)
+      const response = await fetch(`http://localhost:8000/${endpoint}`, {
+        method: 'POST',
+        body: formData
+      })
       
-      if (response?.success) {
-        setSummary(response.data.summary)
+      if (response.ok) {
+        const data = await response.json()
+        setSummary(data.summary)
       } else {
-        setSummary('Error occurred while summarizing file: ' + (response?.error || 'Unknown error'))
+        const errorData = await response.json().catch(() => ({}))
+        setSummary('Error occurred while summarizing file: ' + (errorData.detail || response.statusText))
       }
     } catch (error) {
       console.error('Error:', error)
-      setSummary('Error occurred while summarizing file')
+      setSummary('Error occurred while summarizing file: ' + error.message)
     }
     setLoading(false)
   }

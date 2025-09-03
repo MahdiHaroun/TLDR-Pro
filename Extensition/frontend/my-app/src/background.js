@@ -38,7 +38,19 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 // Handle messages from content script or popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "summarize") {
-    // Forward summarization request to backend
+    // Handle different types of requests
+    if (request.data instanceof FormData || request.isFormData) {
+      // For file uploads, we need to handle this differently
+      // Since FormData can't be passed through message passing,
+      // we'll need the popup to make the request directly
+      sendResponse({ 
+        success: false, 
+        error: "File uploads not supported through extension messaging. Use direct fetch from popup." 
+      });
+      return true;
+    }
+    
+    // Forward text/URL summarization request to backend
     fetch('http://localhost:8000' + request.endpoint, {
       method: 'POST',
       headers: {
