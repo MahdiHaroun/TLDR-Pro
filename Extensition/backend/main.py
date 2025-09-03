@@ -13,7 +13,12 @@ app.include_router(ms.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5176"],  # React dev server
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://localhost:5176",
+        "chrome-extension://*",  # Allow any Chrome extension
+        "*"  # Allow all origins for testing (remove in production)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

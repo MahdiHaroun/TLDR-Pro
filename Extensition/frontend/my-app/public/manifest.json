@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "TLDR-Pro",
+  "version": "1.0.0",
+  "description": "Summarize any content quickly and easily - text, URLs, PDFs, and documents",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "TLDR-Pro - Quick Summarizer"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
