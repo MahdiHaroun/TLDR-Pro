@@ -18,3 +18,6 @@ python-multipart
 docx2txt
 python-magic
 python-pptx
+pandas
+msoffcrypto-tool
+openpyxl

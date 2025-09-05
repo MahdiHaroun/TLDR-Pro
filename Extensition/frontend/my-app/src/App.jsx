@@ -7,8 +7,52 @@ function App() {
   const [url, setUrl] = useState('')
   const [wordCount, setWordCount] = useState(100)
   const [file, setFile] = useState(null)
+  const [fileExtension, setFileExtension] = useState('')
   const [summary, setSummary] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Function to get file extension
+  const getFileExtension = (filename) => {
+    if (!filename) return ''
+    return filename.toLowerCase().split('.').pop()
+  }
+
+  // Function to check if file type is supported for specific endpoint
+  const isFileTypeSupported = (extension, endpoint) => {
+    const supportedTypes = {
+      pdf: ['pdf'],
+      'ms/word': ['doc', 'docx'],
+      'ms/excel': ['xls', 'xlsx'],
+      'ms/powerp': ['ppt', 'pptx']
+    }
+    return supportedTypes[endpoint]?.includes(extension) || false
+  }
+
+  // Function to get the correct endpoint for a file extension
+  const getEndpointForFile = (extension) => {
+    if (['doc', 'docx'].includes(extension)) return 'ms/word'
+    if (['xls', 'xlsx'].includes(extension)) return 'ms/excel'
+    if (['ppt', 'pptx'].includes(extension)) return 'ms/powerp'
+    if (extension === 'pdf') return 'pdf'
+    return null
+  }
+
+  // Function to check if any document type is supported
+  const isDocumentSupported = (extension) => {
+    return ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(extension)
+  }
+
+  // Handle file selection and set extension
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]
+    setFile(selectedFile)
+    if (selectedFile) {
+      const extension = getFileExtension(selectedFile.name)
+      setFileExtension(extension)
+    } else {
+      setFileExtension('')
+    }
+  }
 
   // Auto-fill current page URL when URL tab is selected
   useEffect(() => {
@@ -153,11 +197,13 @@ function App() {
         <p>Quick content summarizer</p>
       </header>
 
-      <div className="quick-actions">
-        <button onClick={summarizeCurrentPage} disabled={loading} className="quick-btn">
-          {loading ? 'Processing...' : '📄 Summarize This Page'}
-        </button>
-      </div>
+      {(activeTab === 'text' || activeTab === 'url') && (
+        <div className="quick-actions">
+          <button onClick={summarizeCurrentPage} disabled={loading} className="quick-btn">
+            {loading ? 'Processing...' : '📄 Summarize This Page'}
+          </button>
+        </div>
+      )}
 
       <nav className="tabs">
         <button 
@@ -173,10 +219,16 @@ function App() {
           URL
         </button>
         <button 
-          className={activeTab === 'files' ? 'active' : ''} 
-          onClick={() => setActiveTab('files')}
+          className={activeTab === 'pdf' ? 'active' : ''} 
+          onClick={() => setActiveTab('pdf')}
         >
-          Files
+          PDF
+        </button>
+        <button 
+          className={activeTab === 'documents' ? 'active' : ''} 
+          onClick={() => setActiveTab('documents')}
+        >
+          Documents
         </button>
       </nav>
 
@@ -223,43 +275,57 @@ function App() {
             </div>
           )}
 
-          {activeTab === 'files' && (
+          {activeTab === 'pdf' && (
             <div className="file-input">
               <input
                 type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                onChange={handleFileChange}
+                accept=".pdf"
               />
-              <div className="file-buttons">
-                <button 
-                  onClick={() => handleFileSummary('pdf')} 
-                  disabled={loading || !file}
-                  className="small-btn"
-                >
-                  PDF
-                </button>
-                <button 
-                  onClick={() => handleFileSummary('word')} 
-                  disabled={loading || !file}
-                  className="small-btn"
-                >
-                  Word
-                </button>
-                <button 
-                  onClick={() => handleFileSummary('excel')} 
-                  disabled={loading || !file}
-                  className="small-btn"
-                >
-                  Excel
-                </button>
-                <button 
-                  onClick={() => handleFileSummary('powerp')} 
-                  disabled={loading || !file}
-                  className="small-btn"
-                >
-                  PowerPoint
-                </button>
-              </div>
+              {file && (
+                <div className="file-info">
+                  <span className="file-name">📄 {file.name}</span>
+                  <span className="file-extension">({fileExtension.toUpperCase()})</span>
+                </div>
+              )}
+              <button 
+                onClick={() => handleFileSummary('pdf')} 
+                disabled={loading || !file || !isFileTypeSupported(fileExtension, 'pdf')}
+                className={`file-button ${!isFileTypeSupported(fileExtension, 'pdf') ? 'disabled' : ''}`}
+              >
+                {loading ? 'Summarizing...' : 'Summarize PDF'}
+              </button>
+              {file && !isFileTypeSupported(fileExtension, 'pdf') && (
+                <p className="error-message">Please select a PDF file (.pdf)</p>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'documents' && (
+            <div className="file-input">
+              <input
+                type="file"
+                onChange={handleFileChange}
+                accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx"
+              />
+              {file && (
+                <div className="file-info">
+                  <span className="file-name">📄 {file.name}</span>
+                  <span className="file-extension">({fileExtension.toUpperCase()})</span>
+                </div>
+              )}
+              <button 
+                onClick={() => handleFileSummary(getEndpointForFile(fileExtension))} 
+                disabled={loading || !file || !isDocumentSupported(fileExtension)}
+                className={`file-button ${!isDocumentSupported(fileExtension) ? 'disabled' : ''}`}
+              >
+                {loading ? 'Summarizing...' : '� Summarize Document'}
+              </button>
+              {file && !isDocumentSupported(fileExtension) && (
+                <p className="error-message">
+                  Please select a supported document: Word (.doc, .docx), Excel (.xls, .xlsx), or PowerPoint (.ppt, .pptx)
+                </p>
+              )}
             </div>
           )}
         </div>
