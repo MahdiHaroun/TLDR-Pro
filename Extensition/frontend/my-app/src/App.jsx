@@ -149,7 +149,7 @@ function App() {
     
     try {
       // Make direct request for file uploads (can't pass FormData through extension messaging)
-      const response = await fetch(`http://3.75.217.134/${endpoint}`, {
+      const response = await fetch(`http://3.77.139.166/${endpoint}`, {
         method: 'POST',
         body: formData
       })

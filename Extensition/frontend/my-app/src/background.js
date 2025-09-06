@@ -51,7 +51,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     
     // Forward text/URL summarization request to backend
-    fetch('http://3.75.217.134' + request.endpoint, {
+  fetch('http://3.77.139.166' + request.endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -10,7 +10,7 @@
     "contextMenus"
   ],
   "host_permissions": [
-    "http://3.75.217.134/*",
+  "http://3.77.139.166/*",
     "https://*/*",
     "http://*/*"
   ],
