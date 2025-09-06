@@ -118,7 +118,6 @@ TLDR-Pro/
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/hello` | GET | Health check endpoint |
 | `/summarize-text` | POST | Summarize plain text |
 | `/summarize-pdf` | POST | Upload and summarize PDF |
 | `/summarize-url` | POST | Summarize webpage/YouTube |
@@ -149,24 +148,22 @@ response = requests.post("http://localhost:8000/summarize-url",
 ## 🛠️ Technology Stack
 
 ### Backend
-- **FastAPI**: Modern, fast web framework for building APIs
-- **LangChain**: Framework for developing LLM applications
-- **GROQ**: High-performance AI inference
-- **PyPDF**: PDF processing and text extraction
-- **BeautifulSoup**: Web scraping and HTML parsing
-- **yt-dlp**: YouTube video processing
+- **FastAPI**
+- **LangChain**
+- **GROQ**
+
 
 ### Frontend
-- **React**: User interface library
-- **Vite**: Fast build tool and development server
-- **Chrome Extension APIs**: Browser integration
-- **Tailwind CSS**: Utility-first CSS framework
+- **React**
+- **Vite**
+- **Chrome Extension APIs**
+- **Tailwind CSS**
 
 ### AI & ML
-- **LangChain Community**: Document loaders and text splitters
-- **Sentence Transformers**: Text embeddings
-- **FAISS**: Vector similarity search
-- **Hugging Face**: Model hub integration
+- **LangChain Community**
+- **Sentence Transformers**
+- **FAISS**
+- **Hugging Face**
 
 ## 🚀 Deployment
 
@@ -179,10 +176,6 @@ cd Extensition/backend && uvicorn main:app --reload
 cd Extensition/frontend/my-app && npm run dev
 ```
 
-### Production Deployment
-- **Backend**: Deploy to AWS Lambda, Google Cloud Run, or similar
-- **Frontend**: Build and package as Chrome Web Store extension
-- **Environment**: Configure production API endpoints
 
 ## 🤝 Contributing
 
@@ -198,30 +191,3 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🎯 Roadmap
-
-- [ ] **Mobile App**: React Native mobile application
-- [ ] **Advanced AI Models**: Integration with GPT-4, Claude, etc.
-- [ ] **Team Collaboration**: Shared summaries and workspaces
-- [ ] **Analytics Dashboard**: Usage insights and statistics
-- [ ] **API Rate Limiting**: Enhanced security and usage controls
-- [ ] **Multi-language UI**: Internationalization support
-
-## 🐛 Issues & Support
-
-Found a bug or have a feature request? Please check our [Issues](https://github.com/MahdiHaroun/TLDR-Pro/issues) page.
-
-For support, email us at [support@tldr-pro.com](mailto:support@tldr-pro.com)
-
-## 🙏 Acknowledgments
-
-- [LangChain](https://langchain.com) for the amazing LLM framework
-- [GROQ](https://groq.com) for high-performance AI inference
-- [FastAPI](https://fastapi.tiangolo.com) for the excellent web framework
-- [React](https://reactjs.org) for the powerful UI library
-
----
-
-**Made with ❤️ by [Mahdi Haroun](https://github.com/MahdiHaroun)**
-
-⭐ **Star this repo if you find it helpful!**
